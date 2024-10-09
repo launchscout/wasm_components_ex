@@ -1,0 +1,63 @@
+{
+  "worlds": [
+    {
+      "name": "todo-list",
+      "imports": {},
+      "exports": {
+        "init": {
+          "function": {
+            "name": "init",
+            "kind": "freestanding",
+            "params": [],
+            "results": [
+              {
+                "type": 0
+              }
+            ]
+          }
+        },
+        "add-todo": {
+          "function": {
+            "name": "add-todo",
+            "kind": "freestanding",
+            "params": [
+              {
+                "name": "todo",
+                "type": "string"
+              },
+              {
+                "name": "todos",
+                "type": 0
+              }
+            ],
+            "results": [
+              {
+                "type": 0
+              }
+            ]
+          }
+        }
+      },
+      "package": 0
+    }
+  ],
+  "interfaces": [],
+  "types": [
+    {
+      "name": null,
+      "kind": {
+        "list": "string"
+      },
+      "owner": null
+    }
+  ],
+  "packages": [
+    {
+      "name": "local:todo-list",
+      "interfaces": {},
+      "worlds": {
+        "todo-list": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[package]
+name = "wasm_components_ex"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "wasm_components_ex"
+path = "src/lib.rs"
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+wasmtime = "25.0.0"
+wasmtime-wasi = "25.0.0"
+wasmtime-wasi-http = "25.0.0"
+wasi-common = "25.0.0"
+wiggle = "25.0.0"
+wat = "1.217.0"
+rustler = "0.34.0"
