@@ -1,10 +1,8 @@
-use wasm_components_ex::component::ComponentResource;
-use wasm_components_ex::store::{
-    ComponentStoreData, ComponentStoreResource,
-};
 use rustler::NifResult;
 use rustler::ResourceArc;
 use std::sync::Mutex;
+use wasm_components_ex::component::ComponentResource;
+use wasm_components_ex::store::{ComponentStoreData, ComponentStoreResource};
 use wasmtime::component::{bindgen, Linker};
 use wasmtime::{Config, Engine, Store};
 
@@ -16,6 +14,13 @@ pub struct TodoListResource {
 
 #[rustler::resource_impl()]
 impl rustler::Resource for TodoListResource {}
+
+fn build_linker(store: &mut Store<ComponentStoreData>) -> Linker<ComponentStoreData> {
+    let mut linker = Linker::new(store.engine());
+    wasmtime_wasi::add_to_linker_sync(&mut linker);
+    wasmtime_wasi_http::add_only_http_to_linker_sync(&mut linker);
+    linker
+}
 
 #[rustler::nif(name = "instantiate")]
 pub fn instantiate(
@@ -35,10 +40,7 @@ pub fn instantiate(
         )))
     })?;
 
-
-    let mut linker = Linker::new(component_store.engine());
-    wasmtime_wasi::add_to_linker_sync(&mut linker);
-    wasmtime_wasi_http::add_only_http_to_linker_sync(&mut linker);
+    let linker = build_linker(component_store);
     let todo_instance = TodoList::instantiate(component_store, &component, &linker)
         .map_err(|err| rustler::Error::Term(Box::new(err.to_string())))?;
 
@@ -75,7 +77,7 @@ pub fn add_todo(
     store_or_caller_resource: ResourceArc<ComponentStoreResource>,
     todo_list_resource: ResourceArc<TodoListResource>,
     todo: String,
-    list: Vec<String>
+    list: Vec<String>,
 ) -> NifResult<Vec<String>> {
     let store_or_caller: &mut Store<ComponentStoreData> =
         &mut *(store_or_caller_resource.inner.lock().map_err(|e| {
