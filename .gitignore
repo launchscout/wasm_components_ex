@@ -26,3 +26,5 @@ wasm_components_ex-*.tar
 /tmp/
 
 priv/native
+
+target
