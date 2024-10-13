@@ -18,9 +18,36 @@ impl rustler::Resource for FormHandlerResource {}
 
 // macro_rules! define_instantiate {
 //   ($component:ident) => {
-
+    
 //   }
 // }
+
+#[rustler::nif(name = "instantiate")]
+pub fn instantiate(
+    component_store_resource: ResourceArc<ComponentStoreResource>,
+    component_resource: ResourceArc<ComponentResource>,
+) -> NifResult<ResourceArc<FormHandlerResource>> {
+    let component_store: &mut Store<ComponentStoreData> =
+        &mut *(component_store_resource.inner.lock().map_err(|e| {
+            rustler::Error::Term(Box::new(format!(
+                "Could not unlock component_store resource as the mutex was poisoned: {e}"
+            )))
+        })?);
+
+    let component = &mut component_resource.inner.lock().map_err(|e| {
+        rustler::Error::Term(Box::new(format!(
+            "Could not unlock component resource as the mutex was poisoned: {e}"
+        )))
+    })?;
+
+    let linker = build_linker(component_store);
+    let form_handler_instance = FormHandler::instantiate(component_store, &component, &linker)
+        .map_err(|err| rustler::Error::Term(Box::new(err.to_string())))?;
+
+    Ok(ResourceArc::new(FormHandlerResource {
+        inner: Mutex::new(form_handler_instance),
+    }))
+}
 
 #[rustler::nif(name = "handle_submit")]
 pub fn handle_submit(
