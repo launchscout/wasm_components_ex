@@ -14,8 +14,8 @@ defmodule WasmComponentsExTest do
   test "form handler" do
     component_bytes = File.read!("test/support/form_handler/form-handler.wasm")
     {:ok, form_handler} = FormHandler.new(component_bytes)
-    assert result = FormHandler.handle_submit(form_handler, [{"foo", ["bar"]}])
-    assert result =~ "message"
+    assert result = FormHandler.handle_submit(form_handler, [{"name", ["John"]}])
+    assert result =~ "Greetings, John!"
   end
 
   test "live state" do

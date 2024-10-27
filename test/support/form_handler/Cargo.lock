@@ -578,6 +578,7 @@ name = "form_handler"
 version = "0.0.1"
 dependencies = [
  "once_cell",
+ "paste",
  "rand",
  "rustler",
  "wasi-common",

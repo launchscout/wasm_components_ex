@@ -1,3 +1,5 @@
+use paste::paste;
+
 #[macro_export]
 macro_rules! wrap_component {
     ($component:ident) => {
